@@ -36,5 +36,18 @@ pie_site <- pie_crab %>% filter (site %in% c("NIB", "ZI", "DB", "JC"))
 # Run a line of code in the Console to confirm that only the sites above remain in the new subset you created
 
 sites <- c("CC", "BB", "PIE")
-
 pie_sites_2 <- pie_crab %>% filter (site %in% sites)
+
+# create a subset using in the %in% operator that includes sites PIE, ZI, NIB, BB and CC
+most_site <- pie_crab %>% filter (site %in% c("PIE", "ZI", "NIB", "BB", "CC"))
+
+# excluding filter statements
+# != (asks is that NOT EQUAL to that value)?
+exclude_zi <- pie_crab %>% filter(site != "ZI")
+
+# what if I want to exclude sites "BB", "CC", and "PIE".
+exclude_bb_cc_pie <- pie_crab %>% filter(!site %in% c("BB", "CC", "PIE"))
+
+# Create a subset from pie_crab that only contains observations from NIB, CC, and ZI, for crabs with carapace size exceeding 13.
+
+site_nib_cc_zi_over13 <- pie_crab %>% filter(site %in% c("NIB", "CC", "ZI"), size >13)
