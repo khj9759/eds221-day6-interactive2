@@ -51,3 +51,63 @@ exclude_bb_cc_pie <- pie_crab %>% filter(!site %in% c("BB", "CC", "PIE"))
 # Create a subset from pie_crab that only contains observations from NIB, CC, and ZI, for crabs with carapace size exceeding 13.
 
 site_nib_cc_zi_over13 <- pie_crab %>% filter(site %in% c("NIB", "CC", "ZI"), size >13)
+
+# -----------------selecting column------------------#
+
+#select individual columns by name, seperate them by a comma
+crabs_subset <- pie_crab %>% select (latitude, size, water_temp)
+
+#select a range of columns using :
+crabs_subset2 <- pie_crab %>% select (site:air_temp)
+
+# select a range and an individual column
+crabs_subset3 <- pie_crab %>% select (date:water_temp, name)
+
+# reoder the columns
+crabs_subset4 <- pie_crab %>% select(name, water_temp, size)
+
+#---------------Mutate------------------------#
+
+#use dplyr::mutate() to add or update a column, while keeping all existing columns
+crabs_cm <- pie_crab %>%
+  mutate(size_cm = size / 10 )
+
+# what happens if I use mutate to add a new columns containing the mean of the size column?
+crabs_mean <- pie_crab %>%
+  mutate(mean_size = mean(size, na.rm=TRUE))
+
+crab_awesome <- pie_crab %>%
+  mutate(name = "Teddy is awesome")
+
+# reminder : group_by+summarize
+mean_size_by_site <- pie_crab %>%
+  group_by(site) %>%
+  summarize(mean_size = mean(size, na.rm=TRUE),
+            sd_size = sd(size,na.rm=TRUE))
+
+# what about a group_by then mutate?
+group_mutate <- pie_crab %>%
+  group_by(site) %>%
+  mutate(mean_size = mean(size, na.rm=TRUE))
+
+
+penguins %>%
+  group_by(species, island) %>%
+  summarize(mean_body_mass = mean (body_mass_g, na.rm = TRUE))
+
+# what if I want to create a new column in pie_crab that contains "giant" if the size is greater than 20, or "not giant" if the size is less than or equal to 35?
+
+# use dplyr::case_when() to write if else satements more easily.
+
+crabs_bin <- pie_crab %>%
+  mutate(size_binned = case_when(
+    size >20 ~ "giant",
+    size <= 20 ~ "not giant"))
+
+site_binned <- pie_crab %>%
+  mutate(region = case_when
+         (site %in% c("ZI", "CC", "PIE") ~ "Low",
+          site %in% c("BB", "NIB") ~ "Middle",
+          TRUE ~ "High"))
+
+# .default = "High"
