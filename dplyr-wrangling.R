@@ -10,7 +10,7 @@ penguins_biscoe <- penguins %>% filter(island == "Biscoe")
 
 penguins_2007 <- penguins %>% filter(year == 2007)
 
-adelie_torgersen <- penguins $>$ filter(species = "Adelie" & island == "Torgersen")
+adelie_torgersen <- penguins %>% filter(species = "Adelie" & island == "Torgersen")
  #Alternatives : penguins %>% filter (species == "Adelie, island == "Torgersen")
 
 # create a subset from penguins that only contains Gentoo penguins observed in 2008.
