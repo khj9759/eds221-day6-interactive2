@@ -1,0 +1,109 @@
+---
+title: "lobster_exploration"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(palmerpenguins)
+library(lterdatasampler)
+library(tidyverse)
+library(here)
+library(janitor)
+library(dplyr)
+```
+
+```{r}
+lobsters <- read_csv(here("data","Lobster_Abundance_All_Years_20210412.csv"), na = c("-99999", "")) %>% 
+  clean_names() %>% 
+  uncount(count)
+```
+
+```{r}
+lobsters_n <- lobsters %>% count(site,year)
+lobsters_count <- lobsters_n %>% uncount(n)
+```
+
+```{r}
+penguins %>% count(species, island)
+penguins_count %>% uncount(n)
+```
+
+```{r}
+lobsters_mean <- lobsters %>%
+  group_by(site, year) %>%
+  summarise(mean_size = mean(size_mm, na.rm=TRUE), count =n())
+```
+
+```{r}
+ggplot(data = lobsters_mean, aes(x=year, y=count )) +
+  geom_point(aes(color=site))
+```
+
+```{r}
+
+lobsters_2020 <- lobsters %>% filter(year == 2020) 
+lobster_legal <- lobsters_2020 %>%
+  mutate(legal_size = case_when(size_mm > 79.76 ~ "YES", size_mm <= 79.76 ~ "NO"))
+
+lobster_2020_legal<- lobster_legal %>%
+  group_by(site, legal_size) %>%
+  summarise(count =n())
+
+```
+
+```{r}
+ggplot(data = lobster_2020_legal, aes(x=site, y=count)) +
+  geom_col(aes(fill = legal_size), position = "fill")
+```
+
+```{r}
+lobsters_site <- lobsters %>% filter(site =="IVEE" | site == "CARP" | site =="NAPL")
+lobsters_august <- lobsters_site %>% filter(month == 8)
+```
+
+```{r}
+lobsters_AQUE_len_70 <- lobsters %>% filter(site %in% c("AQUE"), size_mm > 70)
+
+```
+
+1.  
+
+2.  Create a subset that does NOT include observations from Naples Reef (NAPL)
+
+```{r}
+exclude_NAPL_lobsters <- lobsters %>% filter(!site %in% c("NAPL"))
+```
+
+```{r}
+exclude_NAPL_lobsters_summary <- exclude_NAPL_lobsters %>%
+  group_by(site) %>%
+  summarize(mean_size = mean(size_mm, na.rm=TRUE),
+            sd_size = sd(size_mm,na.rm=TRUE))
+```
+
+```{r}
+lobsters_mm_to_cm <- lobsters %>%
+  mutate(size_cm = size_mm * 10 )
+```
+
+```{r}
+lobsters_character <- lobasters %>% 
+  mutate(area = as.character("area"))
+```
+
+```{r}
+lobsters_size <- lobsters %>%
+  mutate(size_bin = case_when(
+    size_mm >70 ~ "small",
+    size_mm <= 70 ~ "large"))
+```
+
+```{r}
+lobsters_site <- lobsters %>%
+  mutate(designation = case_when(site %in% c ("MPA") ~ "MPA",
+                                 !site %in% c("MPA") ~ "Not MPA"))
+
+
+```
